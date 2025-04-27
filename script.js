@@ -38,7 +38,8 @@ class MusicPlayer {
     this.queueCount = document.getElementById('queueCount')
     this.songMenu = document.getElementById('songMenu')
 
-    // Volume elements
+    // Volume elementssajkfbahfilnlwainfliwa
+
     this.volumeBtn = document.getElementById('volumeBtn')
     this.volumeSlider = document.getElementById('volumeSlider')
     this.volumeTooltip = document.querySelector('.volume-tooltip')
