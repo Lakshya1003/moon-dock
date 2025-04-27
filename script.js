@@ -2,6 +2,7 @@ class MusicPlayer {
   constructor() {
     this.currentSong = null
     this.playlist = []
+    this.queue = []
     this.currentIndex = 0
     this.isPlaying = false
     this.audio = new Audio()
@@ -29,6 +30,11 @@ class MusicPlayer {
     this.playPauseBtn = document.getElementById('playPauseBtn')
     this.forwardBtn = document.getElementById('forwardBtn')
     this.nextBtn = document.getElementById('nextBtn')
+
+    // Queue elements
+    this.queueList = document.getElementById('queueList')
+    this.queueCount = document.getElementById('queueCount')
+    this.songMenu = document.getElementById('songMenu')
   }
 
   setupEventListeners() {
@@ -40,7 +46,7 @@ class MusicPlayer {
 
     // Audio events
     this.audio.addEventListener('timeupdate', () => this.updateProgress())
-    this.audio.addEventListener('ended', () => this.playNext())
+    this.audio.addEventListener('ended', () => this.handleSongEnd())
     this.audio.addEventListener('loadedmetadata', () => {
       this.durationSpan.textContent = this.formatTime(this.audio.duration)
     })
@@ -51,6 +57,16 @@ class MusicPlayer {
     this.nextBtn.addEventListener('click', () => this.playNext())
     this.backwardBtn.addEventListener('click', () => this.seekBackward())
     this.forwardBtn.addEventListener('click', () => this.seekForward())
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (
+        !e.target.closest('.song-menu') &&
+        !e.target.closest('.song-menu-btn')
+      ) {
+        this.songMenu.classList.remove('active')
+      }
+    })
   }
 
   async searchSongs() {
@@ -121,18 +137,30 @@ class MusicPlayer {
       const resultDiv = document.createElement('div')
       resultDiv.className = 'search-result'
       resultDiv.innerHTML = `
-                <div style="padding: 10px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <div class="song-info-container">
                     <h3>${song.title}</h3>
                     <p>${song.subtitle}</p>
                 </div>
+                <button class="song-menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
             `
-      resultDiv.addEventListener('click', () => {
-        if (song.url) {
+
+      // Add click event for playing the song
+      resultDiv
+        .querySelector('.song-info-container')
+        .addEventListener('click', () => {
           this.selectSong(song, index)
-        } else {
-          alert('Sorry, this song is not available for playback.')
-        }
-      })
+        })
+
+      // Add click event for the menu button
+      resultDiv
+        .querySelector('.song-menu-btn')
+        .addEventListener('click', (e) => {
+          e.stopPropagation()
+          this.showSongMenu(e, song)
+        })
+
       this.searchResults.appendChild(resultDiv)
     })
   }
@@ -216,6 +244,105 @@ class MusicPlayer {
     const minutes = Math.floor(seconds / 60)
     const remainingSeconds = Math.floor(seconds % 60)
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+  }
+
+  showSongMenu(event, song) {
+    const menu = this.songMenu
+    const rect = event.target.getBoundingClientRect()
+
+    menu.style.top = `${rect.bottom + window.scrollY}px`
+    menu.style.left = `${rect.left + window.scrollX}px`
+    menu.classList.add('active')
+
+    // Remove old event listeners
+    const menuItems = menu.querySelectorAll('.song-menu-item')
+    menuItems.forEach((item) => {
+      item.replaceWith(item.cloneNode(true))
+    })
+
+    // Add new event listeners
+    menu
+      .querySelector('[data-action="queue"]')
+      .addEventListener('click', () => {
+        this.addToQueue(song)
+        menu.classList.remove('active')
+      })
+
+    menu
+      .querySelector('[data-action="playlist"]')
+      .addEventListener('click', () => {
+        this.addToPlaylist(song)
+        menu.classList.remove('active')
+      })
+  }
+
+  addToQueue(song) {
+    this.queue.push(song)
+    this.updateQueueDisplay()
+  }
+
+  addToPlaylist(song) {
+    // You can implement playlist functionality here
+    alert('Playlist feature coming soon!')
+  }
+
+  updateQueueDisplay() {
+    this.queueList.innerHTML = ''
+    this.queueCount.textContent = `${this.queue.length} songs`
+
+    this.queue.forEach((song, index) => {
+      const queueItem = document.createElement('div')
+      queueItem.className = 'queue-item'
+      if (this.currentSong === song) {
+        queueItem.classList.add('active')
+      }
+
+      queueItem.innerHTML = `
+                <div class="queue-item-info">
+                    <div class="queue-item-title">${song.title}</div>
+                    <div class="queue-item-artist">${song.subtitle}</div>
+                </div>
+                <button class="queue-item-remove">
+                    <i class="fas fa-times"></i>
+                </button>
+            `
+
+      queueItem
+        .querySelector('.queue-item-remove')
+        .addEventListener('click', (e) => {
+          e.stopPropagation()
+          this.removeFromQueue(index)
+        })
+
+      queueItem.addEventListener('click', () => {
+        this.playQueueItem(index)
+      })
+
+      this.queueList.appendChild(queueItem)
+    })
+  }
+
+  removeFromQueue(index) {
+    this.queue.splice(index, 1)
+    this.updateQueueDisplay()
+  }
+
+  playQueueItem(index) {
+    const song = this.queue[index]
+    this.selectSong(song)
+    this.queue.splice(index, 1)
+    this.updateQueueDisplay()
+  }
+
+  handleSongEnd() {
+    if (this.queue.length > 0) {
+      // Play the next song in queue
+      const nextSong = this.queue.shift()
+      this.selectSong(nextSong)
+      this.updateQueueDisplay()
+    } else {
+      this.playNext()
+    }
   }
 }
 

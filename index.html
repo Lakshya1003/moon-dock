@@ -21,11 +21,24 @@
         <!-- Search results will be populated here -->
       </div>
 
-      <!-- dbfjbjksbfcsjhfbvsjhv d -->
+      <!-- Queue Container -->
+      <div class="queue-container">
+        <div class="queue-header">
+          <span>Up Next</span>
+          <span id="queueCount">0 songs</span>
+        </div>
+        <div class="queue-list" id="queueList">
+          <!-- Queue items will be populated here -->
+        </div>
+      </div>
 
       <div class="music-player">
         <div class="song-info">
-          <img src="default-album.png" alt="Album Art" id="albumArt" />
+          <img
+            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCIgeT0iNTAiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmYiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4="
+            alt="Album Art"
+            id="albumArt"
+          />
           <div class="song-details">
             <h2 id="songTitle">No song selected</h2>
             <p id="artistName">-</p>
@@ -61,6 +74,19 @@
         </div>
       </div>
     </div>
+
+    <!-- Song Menu Template (Hidden by default) -->
+    <div class="song-menu" id="songMenu">
+      <div class="song-menu-item" data-action="queue">
+        <i class="fas fa-list"></i>
+        Add to Queue
+      </div>
+      <div class="song-menu-item" data-action="playlist">
+        <i class="fas fa-plus"></i>
+        Add to Playlist
+      </div>
+    </div>
+
     <script src="script.js"></script>
   </body>
 </html>
