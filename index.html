@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Music Player</title>
+    <title>3D Music Player</title>
     <link rel="stylesheet" href="styles.css" />
     <link
       rel="stylesheet"
@@ -11,21 +11,31 @@
     />
   </head>
   <body>
+    <!-- Particle Background -->
+    <div class="particles" id="particles"></div>
+
     <div class="container">
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search for music..." />
-        <button id="searchButton"><i class="fas fa-search"></i></button>
+        <button id="searchButton" class="glow-effect">
+          <i class="fas fa-search"></i>
+        </button>
       </div>
 
       <div class="search-results" id="searchResults">
         <!-- Search results will be populated here -->
       </div>
 
-      <!-- dbfjbjksbfcsjhfbvsjhv d -->
-
       <div class="music-player">
         <div class="song-info">
-          <img src="default-album.png" alt="Album Art" id="albumArt" />
+          <div class="album-art-container">
+            <img
+              src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCIgeT0iNTAiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmYiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4="
+              alt="Album Art"
+              id="albumArt"
+            />
+            <div class="album-reflection"></div>
+          </div>
           <div class="song-details">
             <h2 id="songTitle">No song selected</h2>
             <p id="artistName">-</p>
@@ -43,24 +53,58 @@
         </div>
 
         <div class="controls">
-          <button id="prevBtn" class="control-btn">
+          <button id="prevBtn" class="control-btn floating-btn">
             <i class="fas fa-backward"></i>
           </button>
-          <button id="backwardBtn" class="control-btn">
+          <button id="backwardBtn" class="control-btn floating-btn">
             <i class="fas fa-step-backward"></i>
           </button>
-          <button id="playPauseBtn" class="control-btn">
+          <button id="playPauseBtn" class="control-btn floating-btn main-btn">
             <i class="fas fa-play"></i>
           </button>
-          <button id="forwardBtn" class="control-btn">
+          <button id="forwardBtn" class="control-btn floating-btn">
             <i class="fas fa-step-forward"></i>
           </button>
-          <button id="nextBtn" class="control-btn">
+          <button id="nextBtn" class="control-btn floating-btn">
             <i class="fas fa-forward"></i>
           </button>
         </div>
       </div>
     </div>
+
     <script src="script.js"></script>
+    <script>
+      // Create particles
+      function createParticles() {
+        const particlesContainer = document.getElementById('particles')
+        const particleCount = 50
+
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('div')
+          particle.className = 'particle'
+          particle.style.left = Math.random() * 100 + 'vw'
+          particle.style.animationDelay = Math.random() * 20 + 's'
+          particle.style.animationDuration = 20 + Math.random() * 10 + 's'
+          particlesContainer.appendChild(particle)
+        }
+      }
+
+      // Initialize particles
+      createParticles()
+
+      // Add 3D effect on mouse move
+      document.addEventListener('mousemove', (e) => {
+        const container = document.querySelector('.container')
+        const xAxis = (window.innerWidth / 2 - e.pageX) / 25
+        const yAxis = (window.innerHeight / 2 - e.pageY) / 25
+        container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg) translateZ(0)`
+      })
+
+      // Reset container position when mouse leaves
+      document.addEventListener('mouseleave', () => {
+        const container = document.querySelector('.container')
+        container.style.transform = 'rotateY(0) rotateX(0) translateZ(0)'
+      })
+    </script>
   </body>
 </html>
