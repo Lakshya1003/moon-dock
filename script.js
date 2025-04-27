@@ -6,6 +6,8 @@ class MusicPlayer {
     this.currentIndex = 0
     this.isPlaying = false
     this.audio = new Audio()
+    this.lastVolume = 1
+    this.isMuted = false
     this.initializeElements()
     this.setupEventListeners()
   }
@@ -35,6 +37,15 @@ class MusicPlayer {
     this.queueList = document.getElementById('queueList')
     this.queueCount = document.getElementById('queueCount')
     this.songMenu = document.getElementById('songMenu')
+
+    // Volume elements
+    this.volumeBtn = document.getElementById('volumeBtn')
+    this.volumeSlider = document.getElementById('volumeSlider')
+    this.volumeTooltip = document.querySelector('.volume-tooltip')
+
+    // Set initial volume
+    this.audio.volume = this.volumeSlider.value / 100
+    this.updateVolumeIcon(this.audio.volume)
   }
 
   setupEventListeners() {
@@ -67,6 +78,23 @@ class MusicPlayer {
         this.songMenu.classList.remove('active')
       }
     })
+
+    // Volume control events
+    this.volumeBtn.addEventListener('click', () => this.toggleMute())
+    this.volumeSlider.addEventListener('input', (e) =>
+      this.handleVolumeChange(e)
+    )
+    this.volumeSlider.addEventListener('mousemove', (e) =>
+      this.updateVolumeTooltip(e)
+    )
+    this.volumeSlider.addEventListener(
+      'mouseenter',
+      () => (this.volumeTooltip.style.opacity = '1')
+    )
+    this.volumeSlider.addEventListener(
+      'mouseleave',
+      () => (this.volumeTooltip.style.opacity = '0')
+    )
   }
 
   async searchSongs() {
@@ -343,6 +371,65 @@ class MusicPlayer {
     } else {
       this.playNext()
     }
+  }
+
+  handleVolumeChange(e) {
+    const volume = e.target.value / 100
+    this.audio.volume = volume
+    this.updateVolumeIcon(volume)
+    this.updateVolumeSlider(volume)
+
+    if (volume > 0) {
+      this.isMuted = false
+      this.lastVolume = volume
+    }
+  }
+
+  toggleMute() {
+    if (this.isMuted) {
+      // Unmute
+      this.audio.volume = this.lastVolume
+      this.volumeSlider.value = this.lastVolume * 100
+      this.isMuted = false
+    } else {
+      // Mute
+      this.lastVolume = this.audio.volume
+      this.audio.volume = 0
+      this.volumeSlider.value = 0
+      this.isMuted = true
+    }
+    this.updateVolumeIcon(this.audio.volume)
+    this.updateVolumeSlider(this.audio.volume)
+  }
+
+  updateVolumeIcon(volume) {
+    const icon = this.volumeBtn.querySelector('i')
+    icon.className = 'fas'
+
+    if (volume === 0) {
+      icon.classList.add('fa-volume-mute')
+    } else if (volume < 0.3) {
+      icon.classList.add('fa-volume-off')
+    } else if (volume < 0.7) {
+      icon.classList.add('fa-volume-down')
+    } else {
+      icon.classList.add('fa-volume-up')
+    }
+  }
+
+  updateVolumeSlider(volume) {
+    this.volumeSlider.style.setProperty(
+      '--volume-percentage',
+      `${volume * 100}%`
+    )
+    this.volumeTooltip.textContent = `${Math.round(volume * 100)}%`
+  }
+
+  updateVolumeTooltip(e) {
+    const rect = e.target.getBoundingClientRect()
+    const position = (e.clientX - rect.left) / rect.width
+    const value = Math.round(position * 100)
+    this.volumeTooltip.textContent = `${Math.max(0, Math.min(100, value))}%`
   }
 }
 
