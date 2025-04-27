@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Music Player</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for music..." />
+        <button id="searchButton"><i class="fas fa-search"></i></button>
+      </div>
+
+      <div class="search-results" id="searchResults">
+        <!-- Search results will be populated here -->
+      </div>
+
+      <div class="music-player">
+        <div class="song-info">
+          <img src="default-album.png" alt="Album Art" id="albumArt" />
+          <div class="song-details">
+            <h2 id="songTitle">No song selected</h2>
+            <p id="artistName">-</p>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+          </div>
+          <div class="time-stamps">
+            <span id="currentTime">0:00</span>
+            <span id="duration">0:00</span>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="prevBtn" class="control-btn">
+            <i class="fas fa-backward"></i>
+          </button>
+          <button id="backwardBtn" class="control-btn">
+            <i class="fas fa-step-backward"></i>
+          </button>
+          <button id="playPauseBtn" class="control-btn">
+            <i class="fas fa-play"></i>
+          </button>
+          <button id="forwardBtn" class="control-btn">
+            <i class="fas fa-step-forward"></i>
+          </button>
+          <button id="nextBtn" class="control-btn">
+            <i class="fas fa-forward"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
