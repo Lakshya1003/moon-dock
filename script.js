@@ -60,8 +60,7 @@ class MusicPlayer {
     const options = {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': 'ed47cb496cmsh19777552376a6ddp11a6b2jsn89b4dc03c517',
-        'X-RapidAPI-Host': 'shazam.p.rapidapi.com',
+        
       },
     }
 
